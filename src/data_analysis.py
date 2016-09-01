@@ -1,16 +1,45 @@
+import numpy as np
+import matplotlib.pyplot as pyp
 
+def getName(data, column):
+    if (column.isnumeric()):
+        return data.icol(column).name
+    return column
 
 def frequency(data, column):
-    if (column.isnumeric()):
-        column = data.icol(column).name
+    column = getName(data,column)
     return data[column].value_counts()
 
 
-def stat_by_col(data, column, target):
-    if (column.isnumeric()):
-        column = data.icol(column).name
-    if (target.isnumeric()):
-        target = data.icol(target).name
-    stat_compute = data.groupby(column).describe()[target]
+def stat_by_col(data, column, target, agg_func=[np.size,np.mean,np.std,np.min,np.max,np.var]):
+    column = getName(data, column)
+    target = getName(data, target)
+    stat_compute = data.groupby(column).agg(agg_func)[target]
+    return stat_compute
 
-    return
+def num_missing_val(data):
+    return data.isnull().apply(lambda x : x.value_counts(),0)
+
+def freq_hist(data, column):
+    column = getName(data, column)
+    freq = frequency(data,column)
+    freq.plot.bar()
+
+def barplot_by_col(data,column, target, agg_func=sum):
+    column = getName(data, column)
+    target = getName(data, target)
+    stat = stat_by_col(data, column, target, agg_func)
+    stat.plot.bar()
+
+def freq_box(data, column):
+    column = getName(data, column)
+    freq = frequency(data, column)
+    freq.plot.box()
+
+def boxplot(data, column):
+    column = getName(data, column)
+    data[column].plot.box()
+
+def boxplot_by_col(data, column, target):
+    column, target = (getName(data, column),getName(data, target))
+    data.boxplot(column=target, by=column, rot = 90)
