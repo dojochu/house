@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as pyp
+import pandas as pd
 
 def getName(data, column):
     if (column.isnumeric()):
@@ -43,3 +44,9 @@ def boxplot(data, column):
 def boxplot_by_col(data, column, target):
     column, target = (getName(data, column),getName(data, target))
     data.boxplot(column=target, by=column, rot = 90)
+
+def scatter_corr_plot(data, y, ncols):
+    qcols = data.columns[data.dtypes != 'category']
+    fig,axes = pyp.subplots(nrows = np.ceil(len(qcols)/ncols).__int__()+1,ncols = ncols,sharex=False,sharey=True,squeeze=True)
+    for i in np.arange(0,len(qcols)):
+        data.plot(x=qcols[i], y=y, kind='scatter', ax=axes[np.floor(i/ncols), i % ncols])
