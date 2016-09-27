@@ -50,7 +50,8 @@ def scatter_plot(data, column, target):
     column, target = (getName(data, column), getName(data, target))
     data.plot(x=column, y=target, kind='scatter')
 
-def quant_plot(data, target,nrows = 2, ncols=3):
+
+def quant_plot(data, target = 'No Target',nrows = 2, ncols=3, plot_type='hist'):
     target = getName(data, target)
     qcols = data.columns[data.dtypes != 'category']
     chart_index = 0
@@ -58,7 +59,8 @@ def quant_plot(data, target,nrows = 2, ncols=3):
     for i in np.arange(0,np.ceil(len(qcols)/(nrows+ncols)).__int__()+1):
         if loop_break:
             break
-        fig,axes = pyp.subplots(nrows = nrows,ncols = ncols,sharex=False,sharey=True,squeeze=True)
+        #fig,axes = pyp.subplots(nrows = nrows,ncols = ncols,sharex=False,sharey=True,squeeze=True)
+        fig, axes = pyp.subplots(nrows=nrows, ncols=ncols)
         for j in np.arange(0, nrows):
             if loop_break:
                 break
@@ -66,8 +68,11 @@ def quant_plot(data, target,nrows = 2, ncols=3):
                 if chart_index >= len(qcols):
                     loop_break=True
                     break
-                data.plot(x=qcols[chart_index], y=target, kind='scatter', ax=axes[j, k])
-                #pyp.plot(data=data,x=qcols[chart_index]], y=data[target], ax=axes[j, k], kind=plot_type)
+                if target == 'No Target':
+                    data[qcols[chart_index]].plot(kind=plot_type, ax=axes[j, k], title=qcols[chart_index])
+                else:
+                    data.plot(x=qcols[chart_index], y=target, kind=plot_type, ax=axes[j, k])
+
                 chart_index = chart_index + 1
 
 
