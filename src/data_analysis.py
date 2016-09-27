@@ -20,6 +20,8 @@ def num_missing_val(data):
 
 def freq_hist(data, column, numbins = 10):
     column = getName(data, column)
+    qcols = data.columns[data.dtypes != 'category']
+
     data[column].plot.hist(bins=numbins)
 
 def hist_by_col(data, column, target, numbins = 10):
@@ -44,11 +46,29 @@ def boxplot_by_col(data, column, target):
     column, target = (getName(data, column),getName(data, target))
     data.boxplot(column=target, by=column, rot = 90)
 
-def scatter_corr_plot(data, target, ncols):
+def scatter_plot(data, column, target):
+    column, target = (getName(data, column), getName(data, target))
+    data.plot(x=column, y=target, kind='scatter')
+
+def quant_plot(data, target,nrows = 2, ncols=3):
     target = getName(data, target)
     qcols = data.columns[data.dtypes != 'category']
-    fig,axes = pyp.subplots(nrows = np.ceil(len(qcols)/ncols).__int__()+1,ncols = ncols,sharex=False,sharey=True,squeeze=True)
-    for i in np.arange(0,len(qcols)):
-        data.plot(x=qcols[i], y=target, kind='scatter', ax=axes[np.floor(i/ncols), i % ncols])
+    chart_index = 0
+    loop_break = False
+    for i in np.arange(0,np.ceil(len(qcols)/(nrows+ncols)).__int__()+1):
+        if loop_break:
+            break
+        fig,axes = pyp.subplots(nrows = nrows,ncols = ncols,sharex=False,sharey=True,squeeze=True)
+        for j in np.arange(0, nrows):
+            if loop_break:
+                break
+            for k in np.arange(0, ncols):
+                if chart_index >= len(qcols):
+                    loop_break=True
+                    break
+                data.plot(x=qcols[chart_index], y=target, kind='scatter', ax=axes[j, k])
+                #pyp.plot(data=data,x=qcols[chart_index]], y=data[target], ax=axes[j, k], kind=plot_type)
+                chart_index = chart_index + 1
+
 
 
