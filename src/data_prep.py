@@ -4,8 +4,8 @@ import sys
 def read_house_data(resource_path):
 
     data = pd.read_csv(resource_path+'train.csv')
-    cat_var = data.columns[data.dtypes == "object"].tolist()
-    cat_var.extend(['MSSubClass'])
+    cat_var = data.select_dtypes(include = ['object']).columns.tolist()
+    cat_var.append('MSSubClass')
     for col in cat_var:
         data[col] = data[col].astype('category')
 
